@@ -21,3 +21,11 @@ d. Click "Load unpacked" button in the top-left
 
 e. Navigate to and select your chrome-extension folder (not the root project folder)
 
+
+##To test if it's working:
+
+The extension icon should appear in your Chrome toolbar
+
+Clicking it should open the popup with the "Organize Open Tabs" button
+
+Open several tabs and click the button to test the organization feature
