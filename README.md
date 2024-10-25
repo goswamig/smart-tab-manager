@@ -22,7 +22,7 @@ d. Click "Load unpacked" button in the top-left
 e. Navigate to and select your chrome-extension folder (not the root project folder)
 
 
-##To test if it's working:
+## To test if it's working:
 
 The extension icon should appear in your Chrome toolbar
 
