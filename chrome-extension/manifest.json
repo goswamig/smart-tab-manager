@@ -1,0 +1,12 @@
+{
+  "manifest_version": 3,
+  "name": "Smart Tab Manager",
+  "version": "1.0",
+  "permissions": [
+    "tabs",
+    "storage"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  }
+}
