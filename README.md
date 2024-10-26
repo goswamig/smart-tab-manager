@@ -1,4 +1,4 @@
-# smart-tab-manager
+# Smart-tab-manager
 A chrome extension which manages many tabs across multiple windows.
 
 ## Add your openAI API Key
