@@ -64,24 +64,23 @@ function displayOrganizedTabs(organizedTabs) {
   Object.entries(organizedTabs).forEach(([topic, tabs]) => {
     const topicDiv = document.createElement('div');
     topicDiv.className = 'topic';
-
-  
-     // Clean the title text by removing the encoding artifacts
-     const cleanTabs = tabs.map(tab => ({
+    
+    const cleanTabs = tabs.map(tab => ({
       ...tab,
-      title: tab.title.replace(/â€¢/g, '•').trim() // Replace the broken bullet with proper one
-                        .replace(/^\s*[•·]\s*/, '') // Remove leading bullet points and whitespace
-    }));  
+      title: tab.title.replace(/â€¢/g, '•').trim()
+                        .replace(/^\s*[•·]\s*/, '')
+    }));
 
     topicDiv.innerHTML = `
       <h3>
         ${topic}
-        <span>${tabs.length} tab${tabs.length !== 1 ? 's' : ''}</span>
+        <span>${cleanTabs.length} tab${cleanTabs.length !== 1 ? 's' : ''}</span>
       </h3>
       <div class="tab-list">
-        ${tabs.map(tab => `
+        ${cleanTabs.map(tab => `
           <div class="tab" data-tab-id="${tab.id}" title="${tab.title}">
-            ${tab.title}
+            <span class="tab-title">${tab.title}</span>
+            <button class="close-tab" data-tab-id="${tab.id}" title="Close tab">×</button>
           </div>
         `).join('')}
       </div>
@@ -89,8 +88,12 @@ function displayOrganizedTabs(organizedTabs) {
 
     // Add click handlers for tabs
     topicDiv.querySelectorAll('.tab').forEach(tabElement => {
-      tabElement.addEventListener('click', () => {
-        const tabId = parseInt(tabElement.dataset.tabId);
+      const tabTitle = tabElement.querySelector('.tab-title');
+      const closeButton = tabElement.querySelector('.close-tab');
+      const tabId = parseInt(tabElement.dataset.tabId);
+
+      // Click on title to activate tab
+      tabTitle.addEventListener('click', () => {
         chrome.tabs.update(tabId, { active: true });
         
         // Highlight the clicked tab
@@ -98,6 +101,35 @@ function displayOrganizedTabs(organizedTabs) {
           tab.style.background = '#f8f9fa';
         });
         tabElement.style.background = '#e9ecef';
+      });
+
+      // Click on close button to close tab
+      closeButton.addEventListener('click', async (e) => {
+        e.stopPropagation(); // Prevent tab activation when closing
+        try {
+          await chrome.tabs.remove(tabId);
+          tabElement.style.opacity = '0';
+          setTimeout(() => {
+            tabElement.style.height = '0';
+            tabElement.style.padding = '0';
+            tabElement.style.margin = '0';
+            setTimeout(() => {
+              tabElement.remove();
+              // Update tab count
+              const remainingTabs = topicDiv.querySelectorAll('.tab').length;
+              const countSpan = topicDiv.querySelector('h3 span');
+              countSpan.textContent = `${remainingTabs} tab${remainingTabs !== 1 ? 's' : ''}`;
+              
+              // Remove topic if no tabs left
+              if (remainingTabs === 0) {
+                topicDiv.style.opacity = '0';
+                setTimeout(() => topicDiv.remove(), 300);
+              }
+            }, 300);
+          }, 300);
+        } catch (error) {
+          console.error('Error closing tab:', error);
+        }
       });
     });
 
