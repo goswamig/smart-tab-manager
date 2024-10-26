@@ -1,21 +1,173 @@
-// popup.html
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8">
+  <!-- Add proper character encoding -->
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
   <style>
-    .topic {
-      padding: 10px;
-      margin: 5px;
-      background: #f0f0f0;
-      cursor: pointer;
+    body {
+      width: 400px;
+      min-height: 300px;
+      margin: 0;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: #f8f9fa;
     }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      border-bottom: 1px solid #e9ecef;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      color: #343a40;
+      margin: 0 0 10px 0;
+    }
+
+    #organizeTabs {
+      background: #4263eb;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      width: 100%;
+      max-width: 200px;
+    }
+
+    #organizeTabs:hover {
+      background: #364fc7;
+    }
+
+    #organizeTabs:disabled {
+      background: #868e96;
+      cursor: not-allowed;
+    }
+
+    #topicContainer {
+      max-height: 500px;
+      overflow-y: auto;
+    }
+
+    .topic {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      margin: 10px 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+      border: 1px solid #e9ecef;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .topic:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .topic h3 {
+      margin: 0 0 10px 0;
+      color: #495057;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .topic h3 span {
+      background: #e9ecef;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      color: #495057;
+    }
+
     .tab-list {
-      margin-left: 20px;
+      margin-left: 0;
+    }
+
+    .tab {
+      padding: 8px 12px;
+      margin: 4px 0;
+      background: #f8f9fa;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #495057;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: flex;
+      align-items: center;
+    }
+
+    .tab:hover {
+      background: #e9ecef;
+    }
+
+    .tab::before {
+      content: "•";
+      margin-right: 8px;
+      color: #4263eb;
+    }
+
+    .error {
+      padding: 12px;
+      background: #fff5f5;
+      border: 1px solid #ffc9c9;
+      border-radius: 6px;
+      color: #e03131;
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    /* Loading spinner */
+    .loading {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      margin-left: 8px;
+      border: 3px solid #f8f9fa;
+      border-radius: 50%;
+      border-top: 3px solid #4263eb;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f1f3f5;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: #dee2e6;
+      border-radius: 4px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background: #ced4da;
     }
   </style>
 </head>
 <body>
-  <button id="organizeTabs">Organize Open Tabs</button>
+  <div class="header">
+    <h1>Tab Manager</h1>
+    <button id="organizeTabs">Organize Open Tabs</button>
+  </div>
   <div id="topicContainer"></div>
   <script src="popup.js"></script>
 </body>

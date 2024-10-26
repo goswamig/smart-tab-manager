@@ -64,11 +64,23 @@ function displayOrganizedTabs(organizedTabs) {
   Object.entries(organizedTabs).forEach(([topic, tabs]) => {
     const topicDiv = document.createElement('div');
     topicDiv.className = 'topic';
+
+  
+     // Clean the title text by removing the encoding artifacts
+     const cleanTabs = tabs.map(tab => ({
+      ...tab,
+      title: tab.title.replace(/â€¢/g, '•').trim() // Replace the broken bullet with proper one
+                        .replace(/^\s*[•·]\s*/, '') // Remove leading bullet points and whitespace
+    }));  
+
     topicDiv.innerHTML = `
-      <h3>${topic} (${tabs.length})</h3>
+      <h3>
+        ${topic}
+        <span>${tabs.length} tab${tabs.length !== 1 ? 's' : ''}</span>
+      </h3>
       <div class="tab-list">
         ${tabs.map(tab => `
-          <div class="tab" data-tab-id="${tab.id}">
+          <div class="tab" data-tab-id="${tab.id}" title="${tab.title}">
             ${tab.title}
           </div>
         `).join('')}
@@ -80,6 +92,12 @@ function displayOrganizedTabs(organizedTabs) {
       tabElement.addEventListener('click', () => {
         const tabId = parseInt(tabElement.dataset.tabId);
         chrome.tabs.update(tabId, { active: true });
+        
+        // Highlight the clicked tab
+        topicDiv.querySelectorAll('.tab').forEach(tab => {
+          tab.style.background = '#f8f9fa';
+        });
+        tabElement.style.background = '#e9ecef';
       });
     });
 
