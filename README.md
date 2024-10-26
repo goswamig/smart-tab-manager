@@ -2,8 +2,7 @@
 A chrome extension which manages many tabs across multiple windows.
 
 ## Add your openAI API Key
- Add your OpenAI API key in `backend/server.js` file
-
+  Make sure you have environmental variable defined `OPENAI_API_KEY` in your `SHELL` or `bashrc` or `bash_profile`
 
 ## Run backend 
 `node backend/server.js`
