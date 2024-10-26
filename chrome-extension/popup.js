@@ -73,8 +73,11 @@ function displayOrganizedTabs(organizedTabs) {
 
     topicDiv.innerHTML = `
       <h3>
-        ${topic}
-        <span>${cleanTabs.length} tab${cleanTabs.length !== 1 ? 's' : ''}</span>
+        <span class="topic-name">${topic}</span>
+        <div class="topic-controls">
+          <span class="tab-count">${cleanTabs.length} tab${cleanTabs.length !== 1 ? 's' : ''}</span>
+          <button class="close-topic" title="Close all tabs in this topic">×</button>
+        </div>
       </h3>
       <div class="tab-list">
         ${cleanTabs.map(tab => `
@@ -86,7 +89,40 @@ function displayOrganizedTabs(organizedTabs) {
       </div>
     `;
 
-    // Add click handlers for tabs
+    // Add click handlers for topic close button
+    const closeTopicButton = topicDiv.querySelector('.close-topic');
+    closeTopicButton.addEventListener('click', async (e) => {
+      e.stopPropagation();
+      
+      // Show confirmation dialog
+      const tabCount = cleanTabs.length;
+      if (confirm(`Close all ${tabCount} tabs in "${topic}"?`)) {
+        try {
+          // Get all tab IDs in this topic
+          const tabIds = cleanTabs.map(tab => tab.id);
+          
+          // Close all tabs
+          await chrome.tabs.remove(tabIds);
+          
+          // Animate topic removal
+          topicDiv.style.opacity = '0';
+          setTimeout(() => {
+            topicDiv.style.height = '0';
+            topicDiv.style.padding = '0';
+            topicDiv.style.margin = '0';
+            setTimeout(() => {
+              topicDiv.remove();
+            }, 300);
+          }, 300);
+          
+        } catch (error) {
+          console.error('Error closing topic tabs:', error);
+          alert('Failed to close some tabs');
+        }
+      }
+    });
+
+    // Add click handlers for individual tabs
     topicDiv.querySelectorAll('.tab').forEach(tabElement => {
       const tabTitle = tabElement.querySelector('.tab-title');
       const closeButton = tabElement.querySelector('.close-tab');
@@ -105,7 +141,7 @@ function displayOrganizedTabs(organizedTabs) {
 
       // Click on close button to close tab
       closeButton.addEventListener('click', async (e) => {
-        e.stopPropagation(); // Prevent tab activation when closing
+        e.stopPropagation();
         try {
           await chrome.tabs.remove(tabId);
           tabElement.style.opacity = '0';
@@ -117,7 +153,7 @@ function displayOrganizedTabs(organizedTabs) {
               tabElement.remove();
               // Update tab count
               const remainingTabs = topicDiv.querySelectorAll('.tab').length;
-              const countSpan = topicDiv.querySelector('h3 span');
+              const countSpan = topicDiv.querySelector('.tab-count');
               countSpan.textContent = `${remainingTabs} tab${remainingTabs !== 1 ? 's' : ''}`;
               
               // Remove topic if no tabs left
