@@ -1,5 +1,7 @@
 # Smart-tab-manager
 A chrome extension which manages many tabs across multiple windows.
+![Demo of the feature](SmartTabManager.gif)
+
 
 ## Add your openAI API Key
   Make sure you have environmental variable defined `OPENAI_API_KEY` in your `SHELL` or `bashrc` or `bash_profile`
